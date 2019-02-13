@@ -1,0 +1,89 @@
+<div class="card  mb-4 mt-4 shadow">
+    <div class="card-header" style="background:rgba(0, 0, 0, 0.03);"><em class="text-primary mr-2"
+                                                                         style="font-size:1.5rem;">#</em>Send a message
+    </div>
+    <div class="lead ml-4">Text:</div>
+    <form id="parent_comment_form" action="{% url 'comment:add_comment' article.id %}" method="post">
+        <div class="pl-5 pt-2 card-body">
+            {{form.content}}
+            {{form.parent_comment_id}}
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <button id="submit_parent_comment" type="submit" name="submit" class="btn btn-sm mt-2 btn-outline-dark">
+                    Send
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% for parent_comment,sub_comments in article.comment_tree.items %}
+<div class="card bg-white mb-3 shadow comment-div" id="comment_{{parent_comment.id}}">
+    <div class="card-header lead"><em class="text-primary mr-2" style="font-size:1.5rem;">#</em>Comment &nbsp;
+    </div>
+    <ul class="pl-0 list-unstyled">
+        <li class="text-dark mt-1">
+            <div class="card-body">
+                <div>
+                    <div class="d-inline-block position-absolute"><img
+                            src="/static/image/avatar.jpg" width="56" height="56"></div>
+                    <div class="d-inline-block w-75" style="margin-left:72px;">
+                        <div class="comment_info"><u
+                                class="text-info mr-2"
+                                style="font-weight:450;">{{parent_comment.deliver.nickname}}</u><span
+                                class="small">{{parent_comment.create_time|date:"Y-m-d H:m"}}</span><span></span>
+                        </div>
+                        <div class="comment-content">{{parent_comment.content}}</div>
+                    </div>
+                </div>
+                <ul class="pl-md-5 pl-0 list-unstyled">
+                    {% for comment in sub_comments %}
+                    <li class="pt-3 pl-md-3 pl-0 list-style-none">
+                        <div>
+                            <div class="d-inline-block position-absolute"><img
+                                    src="/static/image/avatar.jpg" width="56" height="56"></div>
+                            <div class="d-inline-block w-75" style="margin-left:72px;">
+                                <div class="comment_info"><u class="text-info mr-2" style="font-weight:450;">{{parent_comment.deliver.nickname}}</u>
+                                    <span class="small">{{parent_comment.create_time|date:"Y-m-d H:m"}}</span><span></span>
+                                </div>
+                                <div class="comment-content">{{comment.content}}</div>
+                            </div>
+                        </div>
+                    </li>
+                    {%endfor %}
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+{% endfor %}
+<div id="reply-form" class="d-none">
+    <form id="reply_form" action="{% url 'comment:add_comment' article.id %}" method="post">
+        {% csrf_token %}
+        <div class="ml-3 pt-2 mt-3" style="border-top:1px solid #000;">{{form.content}}</div>
+            {{form.parent_comment_id}}
+        <div class="mt-2"><button id="send_reply" type="submit" class="btn btn-sm btn-outline-dark float-right">Send</button></div>
+    </form>
+</div>
+<script>
+        function reply(){
+            $('.comment-content').click(function(){
+                $(this).after($('#reply-form').removeClass('d-none'));
+                $('#reply-form').children('form').children('#reply_id').val($(this).parents('.comment-div').attr('id').split("_")[1]);
+            })
+        }
+
+        function addComment(){
+            $('#submit_parent_comment,#send_reply').click(function(){
+                if(AlreadyLogin()){
+                    return true;
+                }
+                else{
+                    $('#makeLogin').modal('show');
+                    return false;
+                }
+            })
+        }
+
+</script>
+

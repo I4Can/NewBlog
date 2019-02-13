@@ -1,0 +1,184 @@
+<div class="text-center pb-0 userModal" id="">
+    <form id="registerInfo" class="form-signin " method="POST" action="/register/">
+        {%csrf_token%}
+        <h2 class="h3 mb-3 font-weight-normal">注册用户 </h2>
+        <label for="registerUsername" class="sr-only">Username</label>
+        <input type="text" id="registerUsername" class="form-control" placeholder="用户名" name="username" required
+               autofocus
+               pattern="^[a-zA-Z0-9_-]{4,16}$">
+        <span id="usernameHelp" style="" class="small text-info float-left">4-16位，可包含 数字 字母 减号 下划线</span>
+        <label for="registerEmail" class="sr-only">Email address</label>
+        <input type="email" id="registerEmail" class="form-control" placeholder="邮箱" name="email" required
+               pattern="^[0-9A-Za-z][\.-_0-9A-Za-z]*@[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)+$">
+        <span id="emailHelp" style="" class="small text-info float-left">请输入你常用的邮箱</span>
+        <label for="registerPassword" class="sr-only">Password</label>
+        <input type="password" id="registerPassword" class="form-control mb-0" placeholder="密码" name="password" required
+               pattern="^[\w_-]{6,16}$">
+        <span id="passwordHelp" style="" class="small text-info float-left">6-16位，可包含 数字 字母 减号 下划线</span>
+        <label for="confirmPassword" class="sr-only">passwordAgain </label>
+        <input type="password" id="confirmPassword" class="form-control" placeholder="确认密码" name="confirmPassword"
+               required>
+        <span id="confirmHelp" style="" class="small text-info float-left">请重复输入密码</span>
+        <div class="small text-right mb-2">已有账号?<label
+                for="to_sign"><a href="" class="sign-reg remove-a"
+                                                   data-target="#carouselExampleIndicators" data-slide-to="0">点我登录</a></label></div>
+        <button class="btn btn-lg btn-primary btn-block" id="registerButton" type="button">Register</button>
+    </form>
+</div>
+
+<script>
+    function checkUsername(){
+        $('#registerUsername').focus(function(){
+                $('#usernameHelp').text('4-16位，可包含 数字 字母 _ -');
+                $('#usernameHelp').attr('class','text-info small float-left');
+        })
+
+        $('#registerUsername').blur(function(){
+            var username=$('#registerUsername').val();
+            if(username){
+                $.ajax({
+                    headers: {"X-CSRFToken":$.cookie("csrftoken")},
+                    url:'{% url "useradmin:check_username" %}',
+                    type:'POST',
+                    data:{'username':username},
+                    dataType:'JSON',
+                    success:function(arg){
+                        if(arg.status){
+                            $('#usernameHelp').text('该用户名可用');
+                            $('#usernameHelp').attr('class','text-success small float-left');
+                            $('#usernameHelp').addClass('small');
+                            document.getElementById('registerUsername').setCustomValidity('');
+                            rightUsername=true;
+                        }
+                        else{
+                            $('#usernameHelp').text('用户名已存在');
+                            $('#usernameHelp').attr('class','text-danger small float-left');
+                            document.getElementById('registerUsername').setCustomValidity('用户名已存在');
+                            rightUsername=false;
+                        }
+                    }
+                })
+
+            }
+            console.log('user2',rightUsername);
+        })
+
+    }
+     function checkEmail(){
+        $('#registerEmail').blur(function(){
+            var str=$('#registerEmail').val();
+            if(str){
+                var re = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+                if (re.test(str)) {
+                    $.ajax({
+                        headers: {"X-CSRFToken":$.cookie("csrftoken")},
+                        url:'{% url "useradmin:check_email" %}',
+                        type:'POST',
+                        data:{'email':str},
+                        dataType:'JSON',
+                        success:function(arg){
+                            if(arg.status){
+                                $('#emailHelp').text('该邮箱可用');
+                                $('#emailHelp').attr('class','text-success small float-left');
+                                rightEmail=true;
+                            }
+                            else{
+                                $('#emailHelp').text('该邮箱已注册');
+                                $('#emailHelp').attr('class','text-danger small float-left');
+                                rightEmail=false;
+                            }
+                        }
+                    })
+                }
+                else {
+                    $('#emailHelp').text('邮箱格式错误');
+                    $('#emailHelp').attr('class','text-danger small float-left');
+                    document.getElementById('registerEmail').setCustomValidity('邮箱格式错误');
+                    rightEmail=false;
+                }
+            }
+            console.log('email',rightEmail);
+        })
+        $('#registerEmail').focus(function(){
+            $('#emailHelp').text('请输入你常用的邮箱');
+            $('#emailHelp').attr('class','text-info small float-left');
+            document.getElementById('registerEmail').setCustomValidity('');
+        })
+      }
+
+    function checkPassword(){
+        $('#registerUsername').focus(function(){
+                $('#passwordHelp').text('6-16位，可包含 数字 字母 减号 下划线');
+                $('#passwordHelp').attr('class','text-info small float-left');
+                $('#confirmHelp').text('请重复输入密码');
+                $('#confirmHelp').attr('class','text-info small float-left');
+        })
+
+        $('#registerPassword').blur(function(){
+            var str=$('#registerPassword').val();
+            if(str){
+                var re=/^[\w_-]{6,16}$/;
+                if(re.test(str)){
+                    $('#passwordHelp').text('该密码可用');
+                    $('#passwordHelp').attr('class','text-success small float-left');
+                    document.getElementById('registerUsername').setCustomValidity('');
+                    rightPassword=true;
+                }
+                else{
+                    $('#passwordHelp').text('密码格式错误');
+                    $('#passwordHelp').attr('class','text-danger small float-left');
+                    document.getElementById('registerEmail').setCustomValidity('密码格式错误');
+                    rightPassword=false;
+                }
+                console.log('pass',rightPassword);
+            }
+        })
+
+        $('#confirmPassword').blur(function(){
+            var confirm=document.getElementById('confirmPassword');
+            var p1=$('#registerPassword');
+            var p2=$('#confirmPassword');
+            if(p2.val()&&p1.val()!=p2.val()){
+                $('#confirmHelp').text('两次密码输入不一致');
+                $('#confirmHelp').attr('class','text-danger small float-left');
+                $('#passwordHelp').text('6-16位，可包含 数字 字母 减号 下划线');
+                $('#passwordHelp').attr('class','text-info small float-left');
+                p1.val('');
+                p2.val('');
+                rightPassword=false;
+            }
+            else if(p1.val()&&p2.val()&&p1.val()==p2.val()){
+                $('#confirmHelp').text('正确');
+                $('#confirmHelp').attr('class','text-success small float-left');
+            }
+        })
+    }
+
+    function singleVerify(){
+        $('#registerButton').click(function(){
+            if(rightEmail&&rightUsername&&rightPassword){
+                $.ajax({
+                    headers: {"X-CSRFToken":$.cookie("csrftoken")},
+                    url:'{% url "useradmin:register" %}',
+                    type:'POST',
+                    data:$('#registerInfo').serialize(),
+                    dataType:'JSON',
+                    success:function(arg){
+                        if(arg.status){
+                            alert('注册成功');
+                            location.reload();
+                        }
+                        else{
+                            alert(arg.message);
+                        }
+                    }
+                })
+            }
+            else{
+                console.log(rightUsername,rightPassword,rightEmail);
+            }
+        })
+    }
+
+
+</script>

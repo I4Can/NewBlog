@@ -1,0 +1,26 @@
+{% load userinfo %}
+{% with form=request.session.username|getInfo %}
+<div class="modal-header">
+    <p class="modal-title text-center">用户信息：{{form.username.value}}</p>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body text-center userModal pb-0">
+        <form class="form-signin" action="{% url 'useradmin:userinfo_update' request.session.user_id request.path %}"
+              method="post">
+            {%csrf_token%}
+            <label for="id_avatar" style="cursor:pointer;"><img height="72" src="/media/avatar/avatar.jpg" alt=""></label>
+            <div class="d-none" id="user-avatar" >{{form.avatar}}</div>
+            <div class="mt-2">{{form.nickname}}</div>
+            <div class="mt-2">{{form.gender}}</div>
+            <div class="mt-2 mb-2">{{form.presentation}}</div>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary" id="subButton">提交</button>
+        </form>
+        {% endwith %}
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-dark" id="logout_button">退出登录</button>
+</div>
+

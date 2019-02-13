@@ -1,0 +1,39 @@
+{% load blog_tags %}
+<nav class="navbar navbar-dark bg-primary navbar-expand-md mb-3">
+   <a class="navbar-brand" href="{% url 'blog:index'%}" data-toggle="modal" data-target="#makeLogin"><i>Sign</i></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        {% get_category as categories %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'blog:index'%}"><i>Home</i></a>
+      </li>
+        {% for category in categories %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'blog:sort_home' category.slug %}"><i>{{category.title}}</i></a>
+      </li>
+        {% endfor %}
+    </ul>
+    <form class="form-inline my-2 my-lg-0 justify-content-end" action="/search" method="get">
+      <input name="q" class="form-control mr-sm-2 d-inline" type="search" placeholder="Search" required>
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

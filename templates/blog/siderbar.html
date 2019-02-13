@@ -1,0 +1,40 @@
+{% load blog_tags %}
+<div class="card bg-light mb-3 shadow">
+    <div class="card-header lead"><em class="text-primary mr-2" style="font-size:1.5rem;">#</em>Links</div>
+    <ul id="links" class="pl-0 has-hover list-unstyled">
+        {% get_link as links%}
+        {% for link in links%}
+            <li class="text-dark mt-1" style="padding:10px 0 10px 20px"><a href="{{link.link}}" target="_blank" class="remove-a">{{link.name}}</a></li>
+        {% endfor%}
+    </ul>
+</div>
+
+{% get_tag as tags %}
+<div class="card bg-light mb-3 shadow">
+    <div class="card-header lead"><em class="text-primary mr-2" style="font-size:1.5rem;">#</em>Tags
+    </div>
+    <div class="tags p-2">
+        {% for tag in tags %}
+        <span class="text-dark mt-1"><a class="remove-a tag"
+                                        capacity="{{tag.sub_articles.all.count}}"
+                                        href="{% url 'blog:sort_home' tag.slug %}">{{tag.content}}</a></span>
+        {% endfor %}
+    </div>
+</div>
+<div class="card bg-light mb-3 shadow">
+    <div class="card-header lead"><em class="text-primary mr-2" style="font-size:1.5rem;">#</em><i>A  Trick</i>
+    </div>
+    <div class="">
+        <img src="/media/upload/2019/02/11/desk-1.jpg" width="100%">
+    </div>
+</div>
+
+<script>
+    function renderTags(){
+        $('.tag').each(function(){
+            var capacity=$(this).attr('capacity');
+            $(this).css({'font-size':Math.log(capacity+0.1)*6.5+'px','font-weight':Math.log(capacity+0.1)*120+''});
+        })
+    }
+
+</script>

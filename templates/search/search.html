@@ -1,0 +1,70 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+{% if query %}
+<div class="col-md-9 col-lg-4 pr-lg-0 left-part">
+    {% for article in page.object_list %}
+
+    {% if forloop.counter0|divisibleby:2 %}
+    <div class="card bg-white mb-3 shadow ">
+        <div class="card-body">
+            <div class="card-title text-info" style="font-size:1.4em;"><a class="text-info remove-a"
+                                                                          href="{{article.object.get_absolute_url}}">{{article.title}}</a>
+            </div>
+            <div class="time-views" style="height:20px;"><span
+                    class="float-left small c-time text-secondary">{{article.create_time}}</span><span
+                    class="float-right small views">{{article.views}} &nbsp;views</span>
+            </div>
+            <div class="card-text m-3 search-content">{{article.content|safe}}</div>
+            <div class="lead read-more"><a class="remove-a" href="{{article.object.get_absolute_url}}">ReadMore</a>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent" style="border-left:2px solid #007bff">
+            <span class="category text-muted">{{article.category.title}}</span><span class="mr-2 small float-right">comment</span>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor%}
+</div>
+<div class="col-md-9 col-lg-5  right-part order-last order-lg-1">
+    {% for article in page.object_list %}
+    {% if forloop.counter|divisibleby:2 %}
+    <div class="card bg-white mb-3 shadow ">
+        <div class="card-body">
+            <div class="card-title text-info" style="font-size:1.4em;"><a class="text-info remove-a"
+                                                                          href="{{article.object.get_absolute_url}}">{{article.title}}</a>
+            </div>
+            <div class="time-views" style="height:20px;"><span
+                    class="float-left small c-time text-secondary">{{article.create_time}}</span><span
+                    class="float-right small views">{{article.views}} &nbsp;views</span>
+            </div>
+            <div class="card-text m-3 search-content">{{article.content|safe}}</div>
+            <div class="lead read-more"><a class="remove-a" href="{{article.object.get_absolute_url}}">ReadMore</a>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent" style="border-left:2px solid #007bff">
+            <span class="category text-muted">{{article.category.title}}</span><span class="mr-2 small float-right">comment</span>
+        </div>
+    </div>
+    {% endif %}
+    {% empty %}
+    <p>No results found.</p>
+    {% endfor %}
+    {% else %}
+    {# Show some example queries to run, maybe query syntax, something else? #}
+    {% endif %}
+</div>
+<script>
+    $(function(){
+        setArticleHeight()
+    })
+    function setArticleHeight(){
+        $('.search-content').each(function(){
+            $(this).css({'height':Math.random()*100+350,'overflow':'hidden'});
+        })
+    }
+
+</script>
+{% endblock %}
+

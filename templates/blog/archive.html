@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+{% block left%}
+
+<div class="col-md-9 bg-white">
+    <div class="card-body">
+        {% for year,months in date_dict.items %}
+        <ul>
+            <li><div class="text-dark">{{year}}年:</div>
+                <ul>
+                    {% for month,articles in months.items %}
+                        <li><div class="small">{{month}}月</div>
+                            <ul>
+                                {% for article in articles %}
+                                    <li>
+                                        <a class="remove-a text-info" href="{% url 'blog:article_detail' article.id %}">{{article.title}}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {%endfor%}
+                </ul>
+            </li>
+        </ul>
+        {%endfor%}
+    </div>
+</div>
+{% endblock %}

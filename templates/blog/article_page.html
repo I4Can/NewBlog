@@ -1,0 +1,67 @@
+{% extends "blog/base.html" %}
+{% block css %}
+
+{%endblock%}
+{% block left %}
+<div class="col-md-9 bg-transparent">
+    <div class="pt-4 bg-white shadow article-detail">
+        <div class="text-center text-secondary lead">{{article.title}}</div>
+        <div class="card-body">
+            <div class="time-views d-flex justify-content-between mb-4">
+                <div class="small">本文属{% for tag in article.tags.all%}
+                    <a href="{% url 'blog:sort_home' tag.slug %}" class="remove-a"><u>{{tag.content}},</u></a>
+                {% endfor%}标签, <a href="{% url 'blog:sort_home' article.category.slug %}" class="ml-2 remove-a"><u>{{article.category.title}}</u></a>目录</div>
+
+                <span class="float-right small views"><u class="text-primary pr-2">{{article.views}}</u>views</span>
+            </div>
+            <div class="card-text p-3">{{article.content|safe}}</div>
+        </div>
+        <div  class="text-right small c-time text-secondary pr-4">{{article.create_time|date:"Y年m月d日 H时"}}</div>
+        <div id="pre-next" class="pb-3" style="height:100px;">
+            {% if article.previous_article %}
+                <span class="float-left" style="font-size:50px;"><a class="switch-page pl-2 pr-3" href="{% url 'blog:article_detail' article.previous_article.id %}" >&#60;</a></span>
+            {% else %}
+                <span class="float-left"><a href="#">{{article.previous_article.title}}</a></span>
+            {% endif %}
+            {% if article.next_article %}
+                <span class="float-right text-right"  style="font-size:50px;"><a class="switch-page pr-2 pl-3" href="{% url 'blog:article_detail' article.next_article.id %}">&#62;</a></span>
+            {% else %}
+                <span class="float-right"><a href="#">{{article.next_article.title}}</a></span>
+            {% endif %}
+        </div>
+</div>
+    {% include "comment/comment_list.html"%}
+</div>
+
+{%endblock%}
+
+{% block js %}
+
+<script>
+        $(function(){
+            addComment();
+            reply();
+            checkUsername();
+            checkEmail();
+            checkPassword();
+            singleVerify(rightEmail,rightUsername,rightPassword);
+        })
+    </script>
+{%endblock%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+<h2>{{question.question_text}}</h2>
+    {% for choice in question.choice_set.all%}
+        <p>{{choice.choice_text}} <span>票数:{{choice.votes}}</span></p>
+    {% endfor %}

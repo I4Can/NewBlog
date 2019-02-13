@@ -1,0 +1,107 @@
+{% extends "blog/base.html" %}
+{% block left %}
+<div class="col-md-9 col-lg-4 pr-lg-0 left-part">
+    {% for article in article_list %}
+
+    {% if forloop.counter0|divisibleby:2 %}
+    <div class="card bg-white mb-3 shadow">
+        <div class="card-body">
+            <div class="card-title text-info text-center" style="font-size:1.4em;"><p style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"><a class="text-info remove-a"
+                         href="{{article.get_absolute_url}}" >{{article.title}}</a></p>
+            </div>
+            <div class="time-views" style="height:20px;"><span
+                    class="float-left small c-time text-secondary">{{article.create_time}}</span><span
+                    class="float-right small views">{{article.views}} &nbsp;views</span>
+            </div>
+            <div class="card-text m-3 search-content">{{article.content|safe}}</div>
+            <div class="lead read-more"><a class="remove-a" href="{{article.get_absolute_url}}">ReadMore</a>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent" style="border-left:2px solid #007bff">
+            <span class="category text-muted">{{article.category.title}}</span><span class="mr-2 small float-right">comment</span>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor%}
+</div>
+<div class="col-md-9 col-lg-5  right-part order-last order-lg-1">
+    {% for article in article_list %}
+
+    {% if forloop.counter|divisibleby:2 %}
+    <div class="card bg-white mb-3 shadow ">
+        <div class="card-body">
+            <div class="card-title text-info" style="font-size:1.4em;"><p style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"><a class="text-info remove-a"
+                         href="{{article.get_absolute_url}}" >{{article.title}}</a></p>
+            </div>
+            <div class="time-views" style="height:20px;"><span
+                    class="float-left small c-time text-secondary">{{article.create_time}}</span><span
+                    class="float-right small views">{{article.views}} &nbsp;views</span>
+            </div>
+            <div class="card-text m-3 search-content">{{article.content|safe}}</div>
+            <div class="lead read-more"><a class="remove-a" href="{{article.get_absolute_url}}">ReadMore</a>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent" style="border-left:2px solid #007bff">
+            <span class="category text-muted">{{article.category.title}}</span><span class="mr-2 small float-right">comment</span>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor%}
+</div>
+{%endblock%}
+{% block js %}
+<script>
+    $(function(){
+        setArticleHeight()
+    })
+    function setArticleHeight(){
+        $('.search-content').each(function(){
+            $(this).css({'height':'400','overflow':'hidden'});
+        })
+    }
+
+</script>
+
+<script>
+    <!--$(function(){-->
+        <!--renderArticle();-->
+    <!--})-->
+    <!--function renderArticle(){-->
+        <!--var articles={{article_list|safe}};-->
+        <!--var master_card=$('.master-card');-->
+        <!--var left=$('.left-part');-->
+        <!--var right=$('.right-part');-->
+        <!--var lHeight=0,rHeight=0;-->
+        <!--for(i=0;i<articles.length;i++){-->
+            <!--var isLeft=true;-->
+            <!--var sub_card;-->
+            <!--if(lHeight<=rHeight){-->
+                <!--isLeft=true;-->
+                <!--master_card.clone(false).appendTo(left);-->
+                <!--sub_card=left.children().last();-->
+            <!--}-->
+            <!--else{-->
+                <!--isLeft=false;-->
+                <!--master_card.clone(false).appendTo(right);-->
+                <!--sub_card=right.children().last();-->
+            <!--}-->
+            <!--sub_card.children().children('.time-views').children('.c-time').text(articles[i].create_time);-->
+            <!--sub_card.children().children('.time-views').children('.views').html(articles[i].views+'&nbspviews');-->
+            <!--sub_card.children().children('.card-title').html('<a class="remove-a text-info text-center" href="/article/'+articles[i].id+'">'+articles[i].title+'</a>');-->
+            <!--sub_card.children().children('.card-text').html(articles[i].content);-->
+            <!--sub_card.children().children('.read-more').children('a').attr('href','/article/'+articles[i].id+'/');-->
+            <!--sub_card.children('.card-footer').children('.category').html('<b class="mr-1">#</b>'+articles[i].category);-->
+            <!--var height=Math.random()*100+350;-->
+            <!--sub_card.children().children('.card-text').css({'max-height':height,'overflow':'hidden'});-->
+            <!--sub_card.removeClass('d-none');-->
+            <!--if(isLeft){-->
+                <!--lHeight+=height;-->
+            <!--}-->
+            <!--else{-->
+                <!--rHeight+=height;-->
+            <!--}-->
+        <!--}-->
+    <!--}-->
+
+</script>
+{% endblock %}

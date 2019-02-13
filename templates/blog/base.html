@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/mycss/userModal.css">
+    <link href="/static/css/tomorrow-night.css" rel="stylesheet">
+    <script src="/static/js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/popper.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <title>Hello, world!</title>
+    <style>
+        .card{
+            border-radius: 0;
+        }
+        .has-hover li:hover{
+            background:	#E5E5E5;
+        }
+        #BackTime li{
+            padding:10px 0;
+        }
+        .remove-a,.switch-page{
+            text-decoration:none !important;
+            color: #6c757d;
+        }
+        .switch-page:hover{
+            background: #f8f9fa !important;
+        }
+        .sign-reg{
+            color:#dc3545 !important;
+        }
+        .sign-reg:hover{
+            color:#28a745 !important;
+        }
+        .switcher {
+            cursor:pointer;
+        }
+        .switcher {
+            cursor:pointer;
+        }
+        .switcher:hover{
+            background:#6c757d;
+        }
+
+        span. highlighted {
+            color: red;
+        }
+
+        {% block css %}
+        {%endblock%}
+    </style>
+
+</head>
+
+<!-- Modal -->
+{% if request.session.username %}
+<div class="modal fade" id="user_info" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:400px;" role="document">
+        <div class="modal-content">
+            {% include "useradmin/userinfo.html"%}
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="modal fade" id="makeLogin" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:400px;" role="document">
+        <div class="modal-content h-75">
+            <div class="modal-header p-0">
+                <div class="modal-title  text-center">
+                    <ol class="list-inline mb-0">
+                        <li data-target="#carouselExampleIndicators" data-slide-to="0"
+                            class="list-inline-item mr-0 p-2 bg-dark text-light switcher">
+                            <span>登录</span>
+                        </li>
+                        <li data-target="#carouselExampleIndicators" data-slide-to="1"
+                            class="list-inline-item p-2 switcher"><span>注册</span></li>
+                    </ol>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="mr-2">&times;</span>
+                </button>
+            </div>
+            <div id="carouselExampleIndicators" class="carousel slide w-100 h-100">
+
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        {% include "useradmin/sign.html"%}
+                    </div>
+                    <div class="carousel-item">
+                        {% include "useradmin/register.html"%}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal-footer p-2">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<body style="background:#EBECEE;">
+
+{% include "blog/navbar.html"%}
+<div class="container mt-5 pl-lg-5 mb-5">
+    <div class="row">
+        {% block left%}
+        {% endblock %}
+        {% block content %}
+        {% endblock %}
+        <div class="col d-none d-md-block order-2">
+            <div class="card border-0 mb-3 shadow">
+                <div><img src="/media/avatar/avatar.jpg" class="w-100"></div>
+                <div class="card-footer bg-transparent">
+                    <div><b class="text-primary mr-2 lead" style="font-size:1.5rem;">#</b><em class="lead">I-Can</em>
+                    </div>
+                </div>
+                <div class="card-footer bg-light" style="border-left:2px solid #007bff">
+                    <div id="maxim" class="lead text-muted text-center"><em>路漫漫其修远兮</em></div>
+                </div>
+            </div>
+            {% include "blog/siderbar.html" %}
+        </div>
+    </div>
+</div>
+<div id="toolbar" class="mb-5 container pl-lg-5">
+    <div class="row">
+        <div class="col-6">
+            <img src="/media/upload/2019/02/11/desk-1.jpg" width="100%">
+        </div>
+        <div class="col-6 bg-secondary" style="height:300px;"></div>
+    </div>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+<script>
+    var rightUsername=false;
+    var rightEmail=false;
+    var rightPassword=false;
+    $(function(){
+        AlreadyLogin();
+        renderStatus();
+        signSubmit();
+        renderSwitch();
+        renderTags();
+        resetForm();
+    })
+
+    function AlreadyLogin(){
+        return "{{request.session.username|safe}}";
+    }
+
+    function renderStatus(){
+        if(AlreadyLogin()){
+            $('.navbar-brand i').text('Logout');
+            $('.navbar-brand').attr('data-target','#user_info');
+        }
+        $('#logout_button').click(function(){
+             $.ajax({
+                    headers: {"X-CSRFToken":$.cookie("csrftoken")},
+                    url:'{% url "useradmin:logout" %}',
+                    type:'POST',
+                    data:{'username':"{{request.session.username}}"},
+                    success:function(arg){
+                        location.reload();
+                        alert(arg);
+                    }
+                })
+        })
+    }
+
+    function resetForm(){
+        $('#makeLogin').on('hidden.bs.modal',function(){
+            rightUsername=false;
+            rightEmail=false;
+            rightPassword=false;
+            $(':input','.form-signin').val('');
+
+            $('#usernameHelp').text('4-16位，可包含 数字 字母 _ -');
+            $('#usernameHelp').attr('class','text-info small float-left');
+
+            $('#emailHelp').text('请输入你常用的邮箱');
+            $('#emailHelp').attr('class','text-info small float-left');
+
+            $('#passwordHelp').text('6-16位，可包含 数字 字母 减号 下划线');
+            $('#passwordHelp').attr('class','text-info small float-left');
+
+            $('#confirmHelp').text('请重复输入密码');
+            $('#confirmHelp').attr('class','text-info small float-left');
+        })
+    }
+
+    function renderSwitch(){
+        $('li[data-target="#carouselExampleIndicators"],.sign-reg').click(function(){
+            if($(this).hasClass('bg-dark'));
+            else{
+                $('li[data-target="#carouselExampleIndicators"]').toggleClass('text-light');
+                $('li[data-target="#carouselExampleIndicators"]').toggleClass('bg-dark');
+            }
+        })
+    }
+
+
+
+</script>
+{% block js %}
+
+{% endblock %}
+
+
+</body>
+</html>
